@@ -3,7 +3,6 @@ Simple Operating system
 
 
 
-=================================================================
 Tools Needed:
 Note:
 There May Be More ill Try To Update This...
@@ -19,4 +18,4 @@ NASM
 
 grub-mkrescue 
 and grub tools i belive
-=================================================================
+
