@@ -1,12 +1,15 @@
-# Sigmacat-os
-Simple Operating system
-![alt text]("console1.png")
-![alt text]("crash.png")
+# Sigmacat-os: Simple Operating system
+
+
+# Screenshots:
+
+![screenshot 1](console1.png)
+![screenshot 2](Crash.png)
 
 when using an VM use legacy Bios
 Uefi Does not WORK!
 
-Tools Needed:
+# Tools Needed For Building/Develovement:
 Note:
 There May Be More ill Try To Update This...
 im on Windows so some stuff may vary for linux
