@@ -1,64 +1,63 @@
 @echo off
-setlocal enabledelayedexpansion
-
-echo [BUILD] Starting simplified GRUB/Multiboot build...
-
 
 if "%CC%"=="" set "CC=i686-elf-gcc"
 if "%LD%"=="" set "LD=i686-elf-ld"
-if "%OBJCOPY%"=="" set "OBJCOPY=i686-elf-objcopy"
-
-echo [BUILD] Using compiler: %CC%
-
 
 set CFLAGS=-m32 -fno-exceptions -fno-rtti -fno-pie -ffreestanding -nostdlib
-set CCOMPILE_FLAGS=%CFLAGS%
-
 
 mkdir build 2>nul
 mkdir build\iso\boot\grub 2>nul
+mkdir build\Graphics 2>nul
 
-echo building kernel entry
-nasm -f elf32 src\Kernel\kernel_entry.asm -o build\kernel_entry.o || (
-    echo [ERROR] Kernel entry assembly failed!
-    exit /b 1
-)
+echo kernel entry
+nasm -f elf32 src\Kernel\kernel_entry.asm -o build\kernel_entry.o || exit /b 1
 
-echo building C++ kernel files
-%CC% %CCOMPILE_FLAGS% -c src\Kernel\KernelMain.cpp -o build\kernel.o || (
-    echo [ERROR] C++ kernel compilation failed!
-    exit /b 1
-)
+echo kernel main
+%CC% %CFLAGS% -c src\Kernel\KernelMain.cpp -o build\kernel.o || exit /b 1
 
-echo building Kernel Service
-%CC% %CCOMPILE_FLAGS% -c src\Kernel\Kernel_Services.cpp -o build\Kernel_Services.o || (
-    echo [ERROR] Kernel Services compilation failed!
-    exit /b 1
-)
+echo kernel services
+%CC% %CFLAGS% -c src\Kernel\Kernel_Services.cpp -o build\Kernel_Services.o || exit /b 1
 
-echo building serial driver
-%CC% %CCOMPILE_FLAGS% -c src\Kernel\Driver\Serial\serial_driver.cpp -o build\serial_driver.o || (
-    echo [ERROR] Serial Driver compilation failed!
-    exit /b 1
-)
+echo serial driver
+%CC% %CFLAGS% -c src\Kernel\Driver\Serial\serial_driver.cpp -o build\serial_driver.o || exit /b 1
 
-echo building PS2 Keyboard Driver
-%CC% %CCOMPILE_FLAGS% -c src\Kernel\Driver\PS2Keyboard\Ps2KeyboardDriver.cpp -o build\ps2_driver.o || (
-    echo [ERROR] PS2 Keyboard Driver compilation failed!
-    exit /b 1
-)
+echo PS2 keyboard driver
+%CC% %CFLAGS% -c src\Kernel\Driver\PS2Keyboard\Ps2KeyboardDriver.cpp -o build\ps2_driver.o || exit /b 1
 
-echo building PS2 Mouse Driver
-%CC% %CCOMPILE_FLAGS% -c src\Kernel\Driver\PS2Mouse\Ps2MouseMain.cpp -o build\ps2_mouse.o || (
-    echo [ERROR] PS2 Mouse Driver compilation failed!
-    exit /b 1
-)
+echo PS2 mouse driver
+%CC% %CFLAGS% -c src\Kernel\Driver\PS2Mouse\Ps2MouseMain.cpp -o build\ps2_mouse.o || exit /b 1
 
-echo building Driver Manager
-%CC% %CCOMPILE_FLAGS% -c src\Kernel\Driver\DriverManager.cpp -o build\DriverManager.o || (
-    echo [ERROR] Driver Manager compilation failed!
-    exit /b 1
-)
+echo driver manager
+%CC% %CFLAGS% -c src\Kernel\Driver\DriverManager.cpp -o build\DriverManager.o || exit /b 1
+
+echo PIT timer driver
+%CC% %CFLAGS% -c src\Kernel\Driver\Time\Pit\PitMain.cpp -o build\PitMain.o || exit /b 1
+
+echo interrupt stubs
+nasm -f elf32 src\Kernel\interrupts\interrupt_stubs.asm -o build\interrupt_stubs.o || exit /b 1
+
+echo interrupt system
+%CC% %CFLAGS% -c src\Kernel\interrupts\interruptsMain.cpp -o build\interrupts.o || exit /b 1
+
+echo cmd line
+%CC% %CFLAGS% -c src\Os\cmdLine\main.cpp -o build\cmdline_main.o || exit /b 1
+
+echo graphics service
+%CC% %CFLAGS% -c src\Os\Services\Graphics\main.cpp -o build\Graphics\main.o || exit /b 1
+
+echo port I/O
+%CC% %CFLAGS% -c src\Kernel\IO\PortIO.cpp -o build\PortIO.o || exit /b 1
+
+echo input handler
+%CC% %CFLAGS% -c src\Kernel\Input\KernelInputHandler.cpp -o build\KernelInputHandler.o || exit /b 1
+
+echo linking kernel
+%LD% -m elf_i386 -T src\Kernel\linker_grub.ld -nostdlib build\kernel_entry.o build\kernel.o build\Kernel_Services.o build\PortIO.o build\serial_driver.o build\ps2_driver.o build\ps2_mouse.o build\DriverManager.o build\PitMain.o build\interrupt_stubs.o build\interrupts.o build\Graphics\main.o build\cmdline_main.o build\KernelInputHandler.o -o build\kernel.elf || exit /b 1
+
+copy /Y build\kernel.elf build\iso\boot\kernel.bin >nul
+copy /Y grub\grub.cfg build\iso\boot\grub\grub.cfg >nul
+
+if exist make_iso.bat call make_iso.bat
 
 echo building PIT Timer Driver
 %CC% %CCOMPILE_FLAGS% -c src\Kernel\Driver\Time\Pit\PitMain.cpp -o build\PitMain.o || (
