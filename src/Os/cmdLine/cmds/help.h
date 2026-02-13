@@ -8,6 +8,7 @@ int HelpRun(struct Command *ToRun){
     PrintLn("help-debug | Debug Command Help",255,255,255);
     PrintLn("clear | Clears The Screen",255,255,255);
     PrintLn("crash | Tries To Divide By Zero",255,255,255);
+    PrintLn("whoami | username of the current user",255,255,255);
     return 0;
 }
 
