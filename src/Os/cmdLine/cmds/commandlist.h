@@ -21,6 +21,7 @@ static struct Command CmdList[] = {
     {"clear", ClearRun},
     {"crash", FuckUcpu},
     {"help-debug", HelpRunDebug},
+    {"whoami", WhoAmI},
 
 
     {"debug-pit", GetPitTime},
