@@ -13,6 +13,7 @@ struct Command{
 #include "follow.h"
 #include "FuckTheCpu.h"
 #include "Debug.h"
+#include "whoami.h"
 
 static struct Command CmdList[] = {
 
@@ -22,6 +23,7 @@ static struct Command CmdList[] = {
     {"crash", FuckUcpu},
     {"messagebox", MessageBox},
     {"help-debug", HelpRunDebug},
+    {"whoami", WhoAmI},
 
 
     {"debug-pit", GetPitTime},

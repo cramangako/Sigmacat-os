@@ -9,6 +9,7 @@ int HelpRun(struct Command *ToRun){
     PrintLn("clear | Clears The Screen",255,255,255);
     PrintLn("messagebox | Test Of The MessageBox!",255,255,255);
     PrintLn("crash | Tries To Divide By Zero",255,255,255);
+    PrintLn("whoami | username of the current user",255,255,255);
     return 0;
 }
 

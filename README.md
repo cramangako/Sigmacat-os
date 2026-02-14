@@ -1,2 +1,47 @@
-# Sigmacat-os
-Simple Operating system
+# Sigmacat-os: Simple Operating system
+
+Website: [Basic ShowOff Of The Os](https://sigmacat123.com/os.html)
+
+# Features:
+Basic Drivers (PS/2 Mouse, PS/2 Keyboard, PIT-Timer)
+
+Cpu Based Drawing (Text,Gui)
+
+Grub Bootloader
+
+
+
+
+# Screenshots:
+
+  ![screenshot 1](console1.png)
+  
+  Console
+  
+  ![screenshot 2](Crash.png)
+  
+  Crash Screen
+
+# when using an VM use legacy Bios uefi does not work
+
+
+# Tools Needed For Building/Develovement:
+Note:
+There May Be More ill Try To Update This...
+im on Windows so some stuff may vary for linux
+for windows i use WSL
+the scripts might not be perfect so you may need to adjust
+
+in make_iso.bat theres hardcoded paths, you need to change those
+
+VM: I use VM-Ware but quemu would also most likely work
+
+i686-elf Cross-Compiler Toolchain
+
+NASM 
+
+grub-mkrescue 
+and grub tools i belive
+
+# Warning:
+# I am not resposiable for anything you do with this, please use an virtual machine.
