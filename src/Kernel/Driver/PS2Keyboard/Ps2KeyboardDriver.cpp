@@ -1,7 +1,7 @@
 #include "Ps2KeyboardDriver.h"
 #include "KeyList.h"
 #include "../../Kernel_Services.h"
-#include "../../CommonKernel.h"
+#include "../../commonKernel.h"
 #include "../../IO/PortIO.h"
 #include "../../Input/KernelInputHandler.h"
 

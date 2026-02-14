@@ -7,6 +7,7 @@ int HelpRun(struct Command *ToRun){
     PrintLn("help | Displays This Message",255,255,255);
     PrintLn("help-debug | Debug Command Help",255,255,255);
     PrintLn("clear | Clears The Screen",255,255,255);
+    PrintLn("messagebox | Test Of The MessageBox!",255,255,255);
     PrintLn("crash | Tries To Divide By Zero",255,255,255);
     return 0;
 }

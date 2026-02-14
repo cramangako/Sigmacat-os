@@ -45,6 +45,9 @@ echo cmd line
 echo graphics service
 %CC% %CFLAGS% -c src\Os\Services\Graphics\main.cpp -o build\Graphics\main.o || exit /b 1
 
+echo graphics API
+%CC% %CFLAGS% -c src\Os\Services\Graphics\Api\GraphicsApiMain.cpp -o build\Graphics\GraphicsApi.o || exit /b 1
+
 echo port I/O
 %CC% %CFLAGS% -c src\Kernel\IO\PortIO.cpp -o build\PortIO.o || exit /b 1
 
@@ -52,7 +55,7 @@ echo input handler
 %CC% %CFLAGS% -c src\Kernel\Input\KernelInputHandler.cpp -o build\KernelInputHandler.o || exit /b 1
 
 echo linking kernel
-%LD% -m elf_i386 -T src\Kernel\linker_grub.ld -nostdlib build\kernel_entry.o build\kernel.o build\Kernel_Services.o build\PortIO.o build\serial_driver.o build\ps2_driver.o build\ps2_mouse.o build\DriverManager.o build\PitMain.o build\interrupt_stubs.o build\interrupts.o build\Graphics\main.o build\cmdline_main.o build\KernelInputHandler.o -o build\kernel.elf || exit /b 1
+%LD% -m elf_i386 -T src\Kernel\linker_grub.ld -nostdlib build\kernel_entry.o build\kernel.o build\Kernel_Services.o build\PortIO.o build\serial_driver.o build\ps2_driver.o build\ps2_mouse.o build\DriverManager.o build\PitMain.o build\interrupt_stubs.o build\interrupts.o build\Graphics\main.o build\Graphics\GraphicsApi.o build\cmdline_main.o build\KernelInputHandler.o -o build\kernel.elf || exit /b 1
 
 copy /Y build\kernel.elf build\iso\boot\kernel.bin >nul
 copy /Y grub\grub.cfg build\iso\boot\grub\grub.cfg >nul
@@ -92,6 +95,12 @@ mkdir build\Graphics 2>nul
     exit /b 1
 )
 
+echo building graphics API
+%CC% %CCOMPILE_FLAGS% -c src\Os\Services\Graphics\Api\GraphicsApiMain.cpp -o build\Graphics\GraphicsApi.o || (
+    echo [ERROR] Graphics API compilation failed!
+    exit /b 1
+)
+
 
 echo building Port I/O module
 %CC% %CCOMPILE_FLAGS% -c src\Kernel\IO\PortIO.cpp -o build\PortIO.o || (
@@ -106,7 +115,7 @@ echo building kernel input handler
 )
 
 echo Linking kernel
-%LD% -m elf_i386 -T src\Kernel\linker_grub.ld -nostdlib build\kernel_entry.o build\kernel.o build\Kernel_Services.o build\PortIO.o build\serial_driver.o build\ps2_driver.o build\ps2_mouse.o build\DriverManager.o build\PitMain.o build\interrupt_stubs.o build\interrupts.o build\Graphics\main.o build\cmdline_main.o build\KernelInputHandler.o -o build\kernel.elf || (
+%LD% -m elf_i386 -T src\Kernel\linker_grub.ld -nostdlib build\kernel_entry.o build\kernel.o build\Kernel_Services.o build\PortIO.o build\serial_driver.o build\ps2_driver.o build\ps2_mouse.o build\DriverManager.o build\PitMain.o build\interrupt_stubs.o build\interrupts.o build\Graphics\main.o build\Graphics\GraphicsApi.o build\cmdline_main.o build\KernelInputHandler.o -o build\kernel.elf || (
     echo [ERROR] Kernel linking failed!
     exit /b 1
 )

@@ -1,6 +1,6 @@
 #include "Ps2Mouse.h"
 #include "../../Kernel_Services.h"
-#include "../../CommonKernel.h"
+#include "../../commonKernel.h"
 #include "../../IO/PortIO.h"
 #include "../../../Os/Services/Graphics/graphics.h"
 

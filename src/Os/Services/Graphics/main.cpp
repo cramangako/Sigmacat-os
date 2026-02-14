@@ -10,6 +10,11 @@ uint32_t pitch;
 uint8_t bitsPerPixel;
 
 
+static uint8_t currentLayer = 0;
+#define MAX_SCREEN_PIXELS (1920 * 1200)
+static uint8_t zBuffer[MAX_SCREEN_PIXELS];
+
+
 
 int amountToPrint = 0;
 
@@ -41,6 +46,12 @@ void InitGraphics(uint64_t framebuffer_addr, uint32_t h, uint32_t v, uint32_t p,
 
 void SetPixel(uint32_t X, uint16_t Y, uint8_t Red, uint8_t Green, uint8_t Blue){
 
+    uint32_t pixelIndex = Y * horizontal + X;
+
+
+    if (currentLayer < zBuffer[pixelIndex]) return;
+    zBuffer[pixelIndex] = currentLayer;
+
     uint32_t offset = Y * pitch + X * (bitsPerPixel / 8);
     
     framebuffer[offset + 0] = Blue;
@@ -48,7 +59,9 @@ void SetPixel(uint32_t X, uint16_t Y, uint8_t Red, uint8_t Green, uint8_t Blue){
     framebuffer[offset + 2] = Red;
 }
 
-void DrawCharacter(char Character,uint32_t Start_X, uint32_t Start_Y, uint8_t red, uint8_t green, uint8_t blue){
+
+
+void DrawCharacter(char Character,uint32_t Start_X, uint32_t Start_Y, uint8_t red, uint8_t green, uint8_t blue,uint8_t BgRed,uint8_t BgGreen,uint8_t BgBlue){
     int x = 0;
     int y = 0;
     bool bit_state;// if the bit we are looking at is not there or is
@@ -84,7 +97,7 @@ void DrawCharacter(char Character,uint32_t Start_X, uint32_t Start_Y, uint8_t re
 
 
             if (bit_state) SetPixel(cooler_x,cooler_y,blue,green,red); // its BGR not RGB
-            else SetPixel(cooler_x,cooler_y,BgColor); 
+            else SetPixel(cooler_x,cooler_y,BgRed,BgGreen,BgBlue); 
         }  
     }
 
@@ -115,29 +128,37 @@ void ClearLine(int lineNumber) {
 }
 
 void PrintLn(const char* Input, uint8_t Red, uint8_t Green, uint8_t Blue){
-
     CurrentLine++;
 
-    if(Input[0] != '\0'){
+    if (Input == nullptr || Input[0] == '\0') {
+        Char_Start_X = LineStart;
+        Char_Start_Y += 8 + LinePadding;
+        amountToPrint = 0;
+        return;
+    }
 
-        while(Input[amountToPrint] != '\0') amountToPrint++;
+    int i = 0;
+    while (Input[i] != '\0') {
+        char c = Input[i];
 
-        for(int i = 0; i<amountToPrint; i++){
-            char CharToPrint = Input[i];
 
+        if (c == '\r') { i++; continue; }
 
-            DrawCharacter(CharToPrint,Char_Start_X,Char_Start_Y,Blue,Green,Red);
-            Char_Start_X += CharacterPadding;  
-            
+        if (c == '\n') {
+            Char_Start_X = LineStart;
+            Char_Start_Y += 8 + LinePadding;
+            CurrentLine++;
+        } else {
+            DrawCharacter(c, Char_Start_X, Char_Start_Y, Blue, Green, Red, 0, 0, 0);
+            Char_Start_X += CharacterPadding;
         }
 
-
-
+        i++;
     }
 
     Char_Start_X = LineStart;
-    Char_Start_Y += 8 + LinePadding; 
-    amountToPrint = 0; 
+    Char_Start_Y += 8 + LinePadding;
+    amountToPrint = 0;
 }
 
 void ClearScreen(){
@@ -174,4 +195,32 @@ void FillScreenAndClear(uint8_t Red, uint8_t Green, uint8_t Blue){
     Char_Start_X = LineStart;
     Char_Start_Y = LineStart;
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+void SetLayer(uint8_t layer) {
+    currentLayer = layer;
+}
+
+uint8_t GetLayer() {
+    return currentLayer;
+}
+
+
+void ClearLayer(uint8_t layer) {
+    for (uint32_t y = 0; y < vertical; y++) {
+        for (uint32_t x = 0; x < horizontal; x++) {
+            uint32_t pixelIndex = y * horizontal + x;
+            if (zBuffer[pixelIndex] == layer) {
+                zBuffer[pixelIndex] = 0;
+                uint32_t offset = y * pitch + x * (bitsPerPixel / 8);
+                framebuffer[offset + 0] = 0;
+                framebuffer[offset + 1] = 0;
+                framebuffer[offset + 2] = 0;
+            }
+        }
+    }
+}
+
 

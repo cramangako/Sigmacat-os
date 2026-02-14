@@ -1,6 +1,6 @@
 #include "serial_driver.h"
 #include "../../Kernel_Services.h"
-#include "../../CommonKernel.h"
+#include "../../commonKernel.h"
 #include "../../IO/PortIO.h"
 
 #define COM1 0x3F8

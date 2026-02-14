@@ -20,11 +20,13 @@ static struct Command CmdList[] = {
     {"who2follow", WhoToFollowRun},
     {"clear", ClearRun},
     {"crash", FuckUcpu},
+    {"messagebox", MessageBox},
     {"help-debug", HelpRunDebug},
 
 
     {"debug-pit", GetPitTime},
     {"debug-sleep", SleepFor}
+
 
 
 };

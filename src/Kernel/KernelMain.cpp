@@ -14,7 +14,7 @@
 
 
 #include "../Os/Services/Graphics/graphics.h"
-
+#include "../Os/Services/Graphics/Api/GraphicsApi.h"
 // grub info
 static struct multiboot_info* mboot_info = nullptr;
 
@@ -81,6 +81,7 @@ void kernel_main(uint32_t magic, struct multiboot_info* mbi) {
 	const char* CharInput;
 
 	DriverInit();
+
 
 	
 

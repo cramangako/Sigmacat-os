@@ -3,6 +3,7 @@
 #include "../../Kernel/Kernel_Services.h"
 #include "cmds/commandlist.h"
 #include "../Services/Graphics/graphics.h"
+#include "../Services/Graphics/Api/GraphicsApi.h"
 
 /*==========================
 |        Variables         |
@@ -103,7 +104,9 @@ void EnterPressed(){
 
 void NewInput(const char* Input){
     if(strcmp(Input, "!ENTER!") == 0){
+        NewMessageBoxAction();
         EnterPressed();
+        
     }
     else if(strcmp(Input, "!BACK!") == 0){
         if(CurrentChar > 0){
@@ -127,13 +130,13 @@ void NewInput(const char* Input){
 
 void DrawInput(char Input){
     int DrawCord = (CurrentChar * 10) + 200;
-    DrawCharacter(Input,DrawCord,50,255,255,255);
+    DrawCharacter(Input,DrawCord,50,255,255,255,0,0,0);
 }
 
 
 
 void RemoveDrawInput(int target){
     int DrawCord = (target * 10) + 200;
-    DrawCharacter(' ',DrawCord,50,0,0,0);
+    DrawCharacter(' ',DrawCord,50,0,0,0,0,0,0);
 }
 
